@@ -41,8 +41,8 @@ app.post('/', function (req, res) {
 })
 
 function resizeImage(req) {
-    gm(req.file.path)
-        .resize(240, 240)
+    gm("" + req.file.path)
+        .resize("720")
         .noProfile()
         .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
             if (!err) console.log('done');
