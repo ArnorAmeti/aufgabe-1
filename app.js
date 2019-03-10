@@ -9,13 +9,14 @@ let app = express();
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/')
+        cb(null, './public/uploads')
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname)
     }
 });
 var upload = multer({storage: storage}).single('avatar');
+app.use(express.static('./public/uploads'));
 
 app.post('/', function (req, res) {
     upload(req, res, function (err) {
@@ -40,10 +41,10 @@ app.post('/', function (req, res) {
 })
 
 function resizeImage(req) {
-    gm('./uploads/gulp.png')
+    gm(req.file.path)
         .resize(240, 240)
         .noProfile()
-        .write('./uploads/small/test.png', function (err) {
+        .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
             if (!err) console.log('done');
         });
 }
