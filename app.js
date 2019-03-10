@@ -23,22 +23,18 @@ app.post('/', function (req, res) {
         if (err instanceof multer.MulterError) {
             res.json({
                 success: false,
-                message: 'error during uploading 1'
+                message: 'error during uploading'
             });
         } else if (err) {
             res.json({
                 success: false,
-                message: 'error during uploading 2'
+                message: 'error during uploading'
             });
         }
 
-        gm(req.file.path)
-            .resize('720')
-            .noProfile()
-            .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
-                if (!err) console.log('done');
-            });
-        // resizeImage(req);
+        console.log("req.file.path" + req.file.path);
+
+        resizeImages(req);
         res.json({
             success: true,
             message: 'Image uploaded'
@@ -46,25 +42,30 @@ app.post('/', function (req, res) {
     })
 })
 
-function resizeImage(req) {
+function resizeImages(req) {
+
     gm(req.file.path)
         .resize('720')
         .noProfile()
         .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
             if (!err) console.log('done');
         });
+
+    gm(req.file.path)
+        .resize('1280')
+        .noProfile()
+        .write(__dirname + '/public/uploads/medium_' + req.file.filename, function (err) {
+            if (!err) console.log('done');
+        });
+
+    gm(req.file.path)
+        .resize('2044')
+        .noProfile()
+        .write(__dirname + '/public/uploads/big_' + req.file.filename, function (err) {
+            if (!err) console.log('done');
+        });
 }
 
-/*
-function resizeImage(req) {
-    gm(req.file.path)
-        .resize(240, 240)
-        .noProfile()
-        .write('./uploads/small/' + req.file.fieldname + '-' + Date.now(), function (err) {
-            if (!err) console.log('done');
-      });
-}
-*/
 
 
 
