@@ -32,7 +32,13 @@ app.post('/', function (req, res) {
             });
         }
 
-        resizeImage(req);
+        gm(req.file.path)
+            .resize('720')
+            .noProfile()
+            .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
+                if (!err) console.log('done');
+            });
+        // resizeImage(req);
         res.json({
             success: true,
             message: 'Image uploaded'
@@ -41,8 +47,8 @@ app.post('/', function (req, res) {
 })
 
 function resizeImage(req) {
-    gm("" + req.file.path)
-        .resize("720")
+    gm(req.file.path)
+        .resize('720')
         .noProfile()
         .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
             if (!err) console.log('done');
