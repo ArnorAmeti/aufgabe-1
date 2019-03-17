@@ -1,9 +1,14 @@
 let express = require('express');
+let cors = require('cors');
 let im = require('imagemagick');
 let gm = require("gm");
 let multer  = require('multer');
+let fs = require('fs');
+
 
 let app = express();
+
+
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -16,17 +21,55 @@ let storage = multer.diskStorage({
 var upload = multer({storage: storage}).single('avatar');
 app.use(express.static('./public/uploads'));
 
-app.post('/', function (req, res) {
+app.use(cors());
+
+
+app.get('/api/files', function (req, res) {
+    let files = fs.readdirSync('./public/uploads');
+    res.json({
+        files
+    });
+});
+
+app.post('/api/files/optimize', function (req, res) {
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
+            console.log(err);
             res.json({
                 success: false,
-                message: 'error during uploading'
+                message: err
             });
         } else if (err) {
+            console.log(err);
             res.json({
                 success: false,
-                message: 'error during uploading'
+                message: err
+            });
+        }
+
+        console.log("req.file.path" + req.file.path);
+
+        resizeImages(req);
+        res.json({
+            success: true,
+            message: 'Image uploaded'
+        });
+    })
+});
+
+app.post('/api/files/multiple/optimize', function (req, res) {
+    upload(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            console.log(err);
+            res.json({
+                success: false,
+                message: err
+            });
+        } else if (err) {
+            console.log(err);
+            res.json({
+                success: false,
+                message: err
             });
         }
 
