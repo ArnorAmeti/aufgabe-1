@@ -1,8 +1,6 @@
 let express = require('express');
 let im = require('imagemagick');
-let gm = require("gm").subClass({
-    imageMagick: true
-});
+let gm = require("gm");
 let multer  = require('multer');
 
 let app = express();
@@ -40,33 +38,31 @@ app.post('/', function (req, res) {
             message: 'Image uploaded'
         });
     })
-})
+});
 
 function resizeImages(req) {
 
     gm(req.file.path)
         .resize('720')
-        .noProfile()
         .write(__dirname + '/public/uploads/small_' + req.file.filename, function (err) {
+            console.log(err);
             if (!err) console.log('done');
         });
 
     gm(req.file.path)
         .resize('1280')
-        .noProfile()
         .write(__dirname + '/public/uploads/medium_' + req.file.filename, function (err) {
+            console.log(err);
             if (!err) console.log('done');
         });
 
     gm(req.file.path)
         .resize('2044')
-        .noProfile()
         .write(__dirname + '/public/uploads/big_' + req.file.filename, function (err) {
+            console.log(err);
             if (!err) console.log('done');
         });
 }
-
-
 
 
 app.listen(process.env.PORT || 4000, function(){
